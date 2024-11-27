@@ -1,40 +1,30 @@
 # Use the NVIDIA DeepStream 6.3 base image for Jetson
-#FROM nvcr.io/nvidia/deepstream-l4t:6.3-samples
-FROM dustynv/deepstream:r35.4.1
+FROM nvcr.io/nvidia/deepstream-l4t:6.3-samples
 
 # Set working directory
 WORKDIR /app
-# Ensure writable directories
+
+# Ensure writable directories (temporary fixes for issues with apt)
 RUN mkdir -p /var/lib/apt/lists/partial /tmp && chmod -R 777 /var/lib/apt/lists/ /tmp
 
-# Remove problematic repositories
+# Remove problematic repositories (focal-backports and focal-security may cause issues)
 RUN sed -i '/focal-backports/d' /etc/apt/sources.list && \
     sed -i '/focal-security/d' /etc/apt/sources.list
 
-# Add NVIDIA GPG key
+# Add NVIDIA GPG key (fetch once; no need to repeat later)
 RUN apt-key adv --fetch-keys https://repo.download.nvidia.com/jetson/jetson-ota-public.asc
 
 # Install dependencies required for building the LPR app
 ENV DEBIAN_FRONTEND=noninteractive
 ENV CUDA_VER=11.4
 
-# Copy all files into the /app directory
+# Copy application files into the container
 COPY . /app/
 
-#Copy the Engine files /app directory
+# Ensure necessary files are in the correct directory
+# If these files are already part of the context, no need to copy them again.
 COPY LPDNet_usa_pruned_tao5.onnx_b16_gpu0_fp32.engine /app/
 COPY us_lprnet_baseline18_deployable.onnx_b1_gpu0_fp32.engine /app/
-
-COPY sample.mp4 /app/
-COPY deepstream_app_config.txt /app/
-COPY LPR_label.txt /app/
-COPY LPD_label.txt /app/
-COPY libnvdsinfer_custom_impl_lpr.so /app/
-COPY config_infer_primary.txt /app/
-COPY config_infer_secondary.txt /app/
-
-# Add NVIDIA GPG key
-RUN apt-key adv --fetch-keys https://repo.download.nvidia.com/jetson/jetson-ota-public.asc
 
 # Update package list and install dependencies
 RUN apt-get update --allow-releaseinfo-change && apt-get install -y --no-install-recommends \
@@ -56,7 +46,7 @@ RUN apt-get update --allow-releaseinfo-change && apt-get install -y --no-install
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Set permissions for the custom parser (if needed)
+# Set executable permissions for the custom parser
 RUN chmod +x /app/libnvdsinfer_custom_impl_lpr.so
 
 # Set environment variables
