@@ -21,6 +21,7 @@ num-sources=1
 gpu-id=0
 # cudadec-memtype=0
 
+
 [streammux]
 width=1920
 height=1080
@@ -51,12 +52,12 @@ nvbuf-memory-type=0
 enable=1
 gpu-id=0
 gie-unique-id=1
-config-file=/app/config_infer_primary.txt
+config-file=config_infer_primary.txt
 
 [secondary-gie0]
 enable=1
 gpu-id=0
 gie-unique-id=2
-config-file=/app/config_infer_secondary.txt
+config-file=config_infer_secondary.txt
 operate-on-gie-id=1
 operate-on-class-ids=0

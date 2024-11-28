@@ -22,9 +22,9 @@ ENV CUDA_VER=11.4
 COPY . /app/
 
 # Ensure necessary files are in the correct directory
-# If these files are already part of the context, no need to copy them again.
-COPY LPDNet_usa_pruned_tao5.onnx_b16_gpu0_fp32.engine /app/
-COPY us_lprnet_baseline18_deployable.onnx_b1_gpu0_fp32.engine /app/
+COPY LPDNet_usa_pruned_tao5.engine /app/
+COPY us_lprnet_baseline18_deployable.engine /app/
+
 
 # Update package list and install dependencies
 RUN apt-get update --allow-releaseinfo-change && apt-get install -y --no-install-recommends \
@@ -50,9 +50,9 @@ RUN apt-get update --allow-releaseinfo-change && apt-get install -y --no-install
 RUN chmod +x /app/libnvdsinfer_custom_impl_lpr.so
 
 # Set environment variables
-ENV LD_LIBRARY_PATH=/app:$LD_LIBRARY_PATH
+ENV LD_LIBRARY_PATH=/app:/opt/nvidia/deepstream/deepstream-6.3/lib:$LD_LIBRARY_PATH
 ENV DISPLAY=:0
 
 # Set the entrypoint to run the DeepStream pipeline
 ENTRYPOINT ["deepstream-app"]
-CMD ["-c", "deepstream_app_config.txt"]
+CMD ["-c", "deepstream_multi_config.txt"]
