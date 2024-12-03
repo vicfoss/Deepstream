@@ -31,12 +31,29 @@ live-source=0
 nvbuf-memory-type=0
 
 [sink0]
-# 1=Fake Sink, 2=EGL Output, 3=File, 4=RTSP
+#Type - 1=FakeSink 2=EglSink 3=File 4=UDPSink (RTSP) 5=nvoverlaysink 6=MsgConvBroker
 enable=1
-type=2
+type=6
 sync=0
 gpu-id=0
 nvbuf-memory-type=0
+
+[message-consumer0]
+enable=1
+proto-lib=/app/opt/nvidia/deepstream/deepstream-6.3/lib/libnvds_msgbroker.so
+conn-str=af834jgqf7lmd-ats.iot.us-east-1.amazonaws.com;8883
+config-file=/app/config-mqtt.txt
+#topic=jetson/alpr_results
+
+
+
+[message-converter]
+enable=1
+# Use 0 for JSON formatting
+payload-type=0
+config-file=/app/dstest_msgconv_config.txt
+msg2p-lib=/opt/nvidia/deepstream/deepstream-6.3/lib/libnvds_msgconv.so
+topic=jetson/alpr_results
 
 [osd]
 enable=1
@@ -61,3 +78,7 @@ gie-unique-id=2
 config-file=config_infer_secondary.txt
 operate-on-gie-id=1
 operate-on-class-ids=0
+
+
+
+

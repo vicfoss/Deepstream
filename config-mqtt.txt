@@ -1,0 +1,25 @@
+[connection]
+# AWS IoT endpoint
+broker-url=af834jgqf7lmd-ats.iot.us-east-1.amazonaws.com
+# Port for secure MQTT connection
+port=8883
+# Timeout for connection attempts (in seconds)
+timeout=10
+# Reconnect interval (in seconds) for retries
+reconnect-interval=5
+
+[tls]
+# Path to the device certificate
+cert-path=/app/aws-certificates/device-certificate.pem.crt
+# Path to the private key
+key-path=/app/aws-certificates/private.pem.key
+# Path to the CA certificate
+ca-path=/app/aws-certificates/AmazonRootCA1.pem
+
+[general]
+# Mode for the MQTT plugin (publish mode to send messages)
+mode=publish
+# MQTT topic where ALPR results will be sent
+topic=jetson/alpr_results
+
+

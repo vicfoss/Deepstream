@@ -1,0 +1,9 @@
+[general]
+mode=publish
+topic=jetson/alpr_results
+tls=1
+
+[tls]
+cert-path=/app/aws-certificates/device-certificate.pem.crt
+key-path=/app/aws-certificates/private.pem.key
+ca-path=/app/aws-certificates/AmazonRootCA1.pem

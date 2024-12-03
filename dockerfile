@@ -26,7 +26,22 @@ COPY LPDNet_usa_pruned_tao5.engine /app/
 COPY us_lprnet_baseline18_deployable.engine /app/
 
 
-# Update package list and install dependencies
+# Copy AWS IoT certificates into the container
+COPY device-certificate.pem.crt /app/aws-certificates/
+COPY private.pem.key /app/aws-certificates/
+COPY AmazonRootCA1.pem /app/aws-certificates/
+COPY config-mqtt.txt /app/
+
+
+# Copy DeepStream MQTT configuration
+#COPY dstest_mqtt_config.txt /app/
+COPY dstest_msgconv_config.txt /app/
+COPY deepstream_multi_config.txt /app/
+
+
+
+
+# Install dependencies and MQTT client
 RUN apt-get update --allow-releaseinfo-change && apt-get install -y --no-install-recommends \
     libgstreamer1.0-dev \
     libgstreamer-plugins-base1.0-dev \
@@ -43,6 +58,7 @@ RUN apt-get update --allow-releaseinfo-change && apt-get install -y --no-install
     libegl1-mesa \
     libgl1-mesa-glx \
     libgles2-mesa \
+    mosquitto-clients \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -53,6 +69,11 @@ RUN chmod +x /app/libnvdsinfer_custom_impl_lpr.so
 ENV LD_LIBRARY_PATH=/app:/opt/nvidia/deepstream/deepstream-6.3/lib:$LD_LIBRARY_PATH
 ENV DISPLAY=:0
 
+# Add MQTT environment variable
+ENV MESSAGE_CONSUMER_CONFIG=/app/config-mqtt.txt
+
+
+
 # Set the entrypoint to run the DeepStream pipeline
-ENTRYPOINT ["deepstream-app"]
-CMD ["-c", "deepstream_multi_config.txt"]
+#ENTRYPOINT ["deepstream-app"]
+#CMD ["-c", "deepstream_multi_config.txt"]

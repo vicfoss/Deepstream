@@ -1,0 +1,9 @@
+[message]
+format=json
+# Topic where the message is published
+topic=jetson/alpr_results 
+enable=1
+
+[metadata]
+fields=license_plate,confidence,timestamp
+
